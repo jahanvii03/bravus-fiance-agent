@@ -1,0 +1,23 @@
+/* Hide scrollbar while keeping scroll functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+thead {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: #273658;
+}
+table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+th, td {
+  box-sizing: border-box;
+}

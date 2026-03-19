@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react"
 import { useParams } from "react-router-dom"
-import Logo from "@/assets/logo.png"
+import Logo from "../../../assets/logo.png"
 import { X } from "lucide-react"
-import ChatArea from "../../chat/components/ChatArea"
+import ChatArea, { type PowerAlarmData } from "../../chat/components/ChatArea"
 
 export interface Message {
     id: string
@@ -87,7 +87,7 @@ export default function Home({ chatType = "general" }: ChatProps) {
             }
             const data = await response.json();
             console.log("Chat: Loaded threads:", data.threads);
-            console.log("Chat: Thread types:", data.threads.map(t => ({ id: t.thread_id, type: t.type })));
+            console.log("Chat: Thread types:", data.threads.map((t: { thread_id: any; type: any }) => ({ id: t.thread_id, type: t.type })));
 
             setChatThreads(data.threads || []);
         } catch (error) {
@@ -136,7 +136,9 @@ export default function Home({ chatType = "general" }: ChatProps) {
             <div className="flex flex-col flex-1 min-w-0">
                 {/* Chat Area and Input */}
                 <div className="flex flex-col flex-1 overflow-y-auto">
-                    <ChatArea messages={messages} onOpenModal={onOpenModal} chatType={chatType} />
+                    <ChatArea messages={messages} onOpenModal={onOpenModal} chatType={chatType} setDataBarData={function (value: React.SetStateAction<PowerAlarmData[]>): void {
+                        throw new Error("Function not implemented.")
+                    } } />
                 </div>
             </div>
         </div>

@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../../contexts/authContext";
+import { useAuth } from "../../../contexts/authContext";
 import SignupPage from "./SignIn";
+
 
 export function LoginRoute() {
     const { user, loading } = useAuth();

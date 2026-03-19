@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion"
 import { X, MessageSquare, Settings, History, Plus, Clock, LogOut } from "lucide-react"
-import Logo from "../assets/logo.png"
+import Logo from "../../assets/logo.png"
 import { useState, useEffect, useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import Swal from "sweetalert2";

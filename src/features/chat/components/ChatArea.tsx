@@ -2,12 +2,12 @@ import { motion, AnimatePresence } from "framer-motion"
 import { File, TrendingUp, CircleCheckBig, Home, LogOut, MessageSquareText, Info } from "lucide-react"
 import SuggestionCard from "./SuggestionCard"
 import MessageBubble from "./MessageBubble"
-import type { Message } from "./Home"
 import { useNavigate, useLocation } from "react-router-dom"
 import { useRef, useEffect, useState } from "react"
-import Logo from "../assets/logo.png"
-import { useAuth } from "@/Contexts/authContext"
+import Logo from "../../../assets/logo.png"
+import { useAuth } from "../../../contexts/authContext"
 import GuidanceModal from "./GuidanceModal"
+import type { Message } from "../types"
 
 
 export interface PowerAlarmData {
@@ -34,35 +34,11 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
     const allSuggestions = [
         {
             icon: File,
-            title: "Commercial AI",
+            title: "Finance",
             subTitle: "",
             path: "/commercial-ai"
         },
-        {
-            icon: TrendingUp,
-            title: "SAP Data",
-            subtitle: "(Work In Progress)",
-            path: "/sap-data"
-        },
-        {
-            icon: CircleCheckBig,
-            title: "Commercial Head",
-            subTitle: "",
-            path: "/head"
-        },
-        ...(isAdminUser ? [{
-            icon: MessageSquareText,
-            title: "Feedback Logs",
-            subTitle: "",
-            path: "/feedbacklog",
-            adminOnly: true
-        }] : []),
-        {
-            icon: CircleCheckBig,
-            title: "Delegation of Authority",
-            subTitle: "",
-            path: "/doa"
-        },
+
     ]
 
     // Filter suggestions based on admin status
@@ -143,8 +119,9 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
     };
 
     const filteredSuggestions = getFilteredSuggestions();
-
     const getGridClass = (count: number) => {
+         console.log('count',count)
+
         if (count === 1) {
             return "w-full max-w-sm mx-auto shadow-lg"
         } else if (count === 3) {

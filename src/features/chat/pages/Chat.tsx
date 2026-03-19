@@ -1,14 +1,15 @@
-import ChatArea from "@/components/ChatArea"
 import InputArea from "../components/InputArea"
-import Sidebar from "@/components/Sidebar"
+
 import React, { useState, useEffect, useRef } from "react"
 import { Menu } from "lucide-react"
-import PromptLibrary from "@/components/PromptLibrary"
+import PromptLibrary from "../components/PromptLibrary"
 import { useNavigate, useParams } from "react-router-dom"
-import TableSidebar from "@/components/TableSidebar"
+import TableSidebar from "../../../shared/layout/TableSidebar"
 import { useLocation } from "react-router-dom"
-import Logo from "@/assets/logo.png"
-import { useChatAPI } from "@/Contexts/useChatApi"
+import Logo from "../../../assets/logo.png"
+import ChatArea from "../components/ChatArea"
+import Sidebar from "../../../shared/layout/Sidebar"
+import { useChatAPI } from "../hooks/useChatApi"
 
 
 export interface Message {
@@ -253,7 +254,7 @@ export default function Chat({ chatType = "general" }: ChatProps) {
                     }
                     setMessages((prev) => [...prev, assistantMsg])
                     if (sapResult.data && Array.isArray(sapResult.data)) {
-                        setSapData(sapResult.data)
+                        setSapData(sapResult?.data)
                     }
                     await createNewChat(text)
                 }

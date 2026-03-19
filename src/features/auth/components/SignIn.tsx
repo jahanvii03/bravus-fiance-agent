@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { FaMicrosoft } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { motion } from "framer-motion";
-import logo from '../../assets/logo.png';
-import abstractimage from '../../assets/abstractimage.png'
+import logo from '../../../assets/logo.png';
+import abstractimage from '../../../assets/abstractimage.png'
 import { useAuth } from "../../../contexts/authContext";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../shared/components/ui/button";
 
 const SignupPage: React.FC = () => {
     const { login, loading, error } = useAuth();
