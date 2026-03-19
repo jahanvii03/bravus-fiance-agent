@@ -1,0 +1,70 @@
+.card {
+  padding: 24px;
+  background-color: #E5EBF1; /* updated card background */
+  border: 1px solid #d1d5db; /* subtle border */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.kpi-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.kpi-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #273658; /* main color */
+}
+
+.kpi-value-container {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.kpi-value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.trend-positive {
+  color: #16a34a; /* green */
+}
+
+.trend-negative {
+  color: #dc2626; /* red */
+}
+
+.trend-neutral {
+  color: #273658; /* main color for neutral */
+}
+
+.trend-warning {
+  color: #f59e0b; /* yellow/orange */
+}
+
+.kpi-subtitle {
+  font-size: 12px;
+  color: #273658; /* main color */
+}
+
+.kpi-icon-container {
+  padding: 8px;
+  border-radius: 8px;
+  background-color: rgba(39, 54, 88, 0.1); /* main color/10 */
+}
+
+.kpi-icon {
+  color: #273658; /* main color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

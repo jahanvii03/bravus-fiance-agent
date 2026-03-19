@@ -1,0 +1,56 @@
+.card {
+  padding: 24px;
+  background-color: #E5EBF1; /* updated card background */
+  border: 1px solid #d1d5db; /* subtle border */
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #273658; /* main color */
+  margin-bottom: 16px;
+}
+
+.grid {
+  stroke: #d1d5db; /* grid line color */
+}
+
+.x-axis text {
+  fill: #273658; /* main color for axis text */
+  font-size: 12px;
+}
+
+.y-axis text {
+  fill: #273658; /* main color for axis text */
+  font-size: 12px;
+}
+
+.bar {
+  fill: #273658; /* main color for bars */
+}
+
+.tooltip-container {
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.tooltip-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #273658; /* main color */
+  margin-bottom: 4px;
+}
+
+.tooltip-value {
+  font-size: 14px;
+  color: #273658; /* main color */
+}
+
+.tooltip-bold {
+  font-weight: 600;
+}
