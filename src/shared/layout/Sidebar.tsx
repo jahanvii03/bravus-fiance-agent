@@ -138,7 +138,7 @@ export default function Sidebar({
     const getChatTypeDisplayName = () => {
         switch (chatType) {
             case "commercial-ai":
-                return "Commercial AI";
+                return "Finance AI";
             case "sap-data":
                 return "SAP Data";
             default:
@@ -161,7 +161,7 @@ export default function Sidebar({
     return (
         <div className="h-full bg-white border-r border-gray-200 flex flex-col shadow-lg rounded-r-xl">
             {/* New Chat Button */}
-            <div className="p-4 mt-2">
+            {/* <div className="p-4 mt-2">
                 <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -171,7 +171,7 @@ export default function Sidebar({
                     <Plus className="w-5 h-5" />
                     <span className="font-bold">New Chat</span>
                 </motion.button>
-            </div>
+            </div> */}
 
             {/* Chat Threads */}
             <div className="flex-1 overflow-hidden flex flex-col">

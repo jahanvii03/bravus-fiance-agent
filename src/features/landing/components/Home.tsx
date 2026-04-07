@@ -47,73 +47,73 @@ export default function Home({ chatType = "general" }: ChatProps) {
     const [loadingThreads, setLoadingThreads] = useState(true)
 
     // Load chat threads on mount and when chatType changes
-    useEffect(() => {
-        console.log('Chat: Loading threads for chatType:', chatType);
-        loadChatThreads()
-    }, [chatType])
+    // useEffect(() => {
+    //     console.log('Chat: Loading threads for chatType:', chatType);
+    //     loadChatThreads()
+    // }, [chatType])
 
     // Handle URL thread parameter changes
-    useEffect(() => {
-        console.log('Chat: URL threadId changed:', threadId);
-        console.log('Chat: Current threadId state:', currentThreadId);
+    // useEffect(() => {
+    //     console.log('Chat: URL threadId changed:', threadId);
+    //     console.log('Chat: Current threadId state:', currentThreadId);
 
-        if (threadId && threadId !== currentThreadId) {
-            console.log('Chat: Setting new thread and loading messages');
-            setCurrentThreadIdState(threadId)
-            loadMessages(threadId)
-        } else if (!threadId && currentThreadId) {
-            console.log('Chat: Clearing thread state');
-            setCurrentThreadIdState(null)
-            setMessages([])
-        }
-    }, [threadId, currentThreadId])
+    //     if (threadId && threadId !== currentThreadId) {
+    //         console.log('Chat: Setting new thread and loading messages');
+    //         setCurrentThreadIdState(threadId)
+    //         loadMessages(threadId)
+    //     } else if (!threadId && currentThreadId) {
+    //         console.log('Chat: Clearing thread state');
+    //         setCurrentThreadIdState(null)
+    //         setMessages([])
+    //     }
+    // }, [threadId, currentThreadId])
 
     // Save sidebar preference when it changes
     useEffect(() => {
         setSidebarPreference(sidebarOpen)
     }, [sidebarOpen])
 
-    const loadChatThreads = async () => {
-        setLoadingThreads(true);
-        try {
-            // Always pass chat_type parameter for proper filtering
-            const typeParam = `?chat_type=${chatType}`;
-            console.log("Chat: Loading threads with param:", typeParam);
-            console.log("Chat: Current chatType:", chatType);
+    // const loadChatThreads = async () => {
+    //     setLoadingThreads(true);
+    //     try {
+    //         // Always pass chat_type parameter for proper filtering
+    //         const typeParam = `?chat_type=${chatType}`;
+    //         console.log("Chat: Loading threads with param:", typeParam);
+    //         console.log("Chat: Current chatType:", chatType);
 
-            const response = await fetch(`/api/users/${STATIC_USER_ID}/chats${typeParam}`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json();
-            console.log("Chat: Loaded threads:", data.threads);
-            console.log("Chat: Thread types:", data.threads.map((t: { thread_id: any; type: any }) => ({ id: t.thread_id, type: t.type })));
+    //         const response = await fetch(`/api/users/${STATIC_USER_ID}/chats${typeParam}`);
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+    //         const data = await response.json();
+    //         console.log("Chat: Loaded threads:", data.threads);
+    //         console.log("Chat: Thread types:", data.threads.map((t: { thread_id: any; type: any }) => ({ id: t.thread_id, type: t.type })));
 
-            setChatThreads(data.threads || []);
-        } catch (error) {
-            console.error("Error loading chat threads:", error);
-            setChatThreads([]);
-        } finally {
-            setLoadingThreads(false);
-        }
-    };
+    //         setChatThreads(data.threads || []);
+    //     } catch (error) {
+    //         console.error("Error loading chat threads:", error);
+    //         setChatThreads([]);
+    //     } finally {
+    //         setLoadingThreads(false);
+    //     }
+    // };
 
 
-    const loadMessages = async (threadId: string) => {
-        try {
-            console.log('Chat: Loading messages for thread:', threadId);
-            const response = await fetch(`/api/users/${STATIC_USER_ID}/chats/${threadId}`)
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data = await response.json()
-            console.log("Chat: Loaded messages:", data.messages);
-            setMessages(data.messages || [])
-        } catch (error) {
-            console.error("Error loading messages:", error)
-            setMessages([])
-        }
-    }
+    // const loadMessages = async (threadId: string) => {
+    //     try {
+    //         console.log('Chat: Loading messages for thread:', threadId);
+    //         const response = await fetch(`/api/users/${STATIC_USER_ID}/chats/${threadId}`)
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! status: ${response.status}`);
+    //         }
+    //         const data = await response.json()
+    //         console.log("Chat: Loaded messages:", data.messages);
+    //         setMessages(data.messages || [])
+    //     } catch (error) {
+    //         console.error("Error loading messages:", error)
+    //         setMessages([])
+    //     }
+    // }
 
     const onOpenModal = (type: "table" | "chart") => {
         console.log("Chat: onOpenModal called with type:", type); // Debug log

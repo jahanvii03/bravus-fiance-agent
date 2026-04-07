@@ -33,29 +33,7 @@ const InputArea = forwardRef<any, InputAreaProps>(
         const location = useLocation();
         const isDOAPage = location.pathname.startsWith("/doa")
 
-        // Fetch prompts on component mount
-        useEffect(() => {
-            fetchPrompts()
-        }, [])
-
-        const fetchPrompts = async () => {
-            try {
-                const response = await fetch("/api/get-prompts")
-                if (response.ok) {
-                    const data = await response.json()
-                    const transformedCategories = data.prompt_categories?.map((category) => ({
-                        id: category.id,
-                        name: category.name || 'Unnamed Category',
-                        icon: category.icon,
-                        prompts: category.prompts || []
-                    })) || []
-                    setPromptCategories(transformedCategories)
-                }
-            } catch (err) {
-                console.error("Failed to fetch prompts:", err)
-            }
-        }
-
+     
         const filterSuggestions = (inputValue: string) => {
             if (!inputValue.trim()) {
                 setSuggestions([])

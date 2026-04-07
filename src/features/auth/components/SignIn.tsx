@@ -111,7 +111,7 @@ const SignupPage: React.FC = () => {
                         className="relative z-10 text-center mb-12"
                     >
                         <h1 className="text-3xl lg:text-4xl font-medium text-gray-800 mb-4">
-                            Welcome to <b>Bravus Commercial Agentic AI</b>
+                            Welcome to <b>Bravus Cashflow AI</b>
                         </h1>
                         {/* <h2 className="text-2xl lg:text-3xl font-medium text-gray-700 mb-6">Can I help you with anything?</h2> */}
                         <p className="text-gray-500 max-w-md mx-auto leading-relaxed">

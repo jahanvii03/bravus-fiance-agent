@@ -1,9 +1,8 @@
-import { AnimatePresence, motion } from "framer-motion"
-import { BarChart3, Table, Bot, ExternalLink, Download, ThumbsUp, ThumbsDown } from "lucide-react"
+import {  motion } from "framer-motion"
+import { Table, Bot,  ThumbsUp, ThumbsDown } from "lucide-react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import { useState, useEffect } from 'react'
-import SpinnerDownload from "./SpinnerDownload"
 import JSZip from 'jszip'
 import Swal from "sweetalert2"
 
@@ -12,6 +11,7 @@ export interface TableData {
 }
 
 interface Message {
+    data: any
     thread_id: string;
     role: "user" | "assistant";
     content: string;
@@ -65,20 +65,6 @@ export default function MessageBubble({ message, onOpenModal, setDataBarData, on
         'adaniInvoiceReceivedDate': 'Inv Received Date'
     }
 
-    const formatColumnHeader = (column: string) => {
-        if (headerMapping[column]) {
-            return headerMapping[column];
-        }
-
-        return column
-            .replace(/([A-Z])/g, ' $1')
-            .replace(/^./, (str) => str.toUpperCase())
-            .trim();
-    };
-
-    const isValueColumn = (columnName: string): boolean => {
-        return columnName.toLowerCase().endsWith('value');
-    };
 
     const handleLike = async () => {
         console.log("MessageBubble: Like button clicked for message:", message.id);
@@ -272,49 +258,7 @@ export default function MessageBubble({ message, onOpenModal, setDataBarData, on
     };
 
 
-
-
-    // const handleTableClick = (sql_query: string, sql_query_response: string, executed_sql: string) => {
-    //     // console.log("MessageBubble: Table button clicked");
-    //     // console.log("SQL Query:", sql_query);
-    //     // console.log("SQL Query Response:", sql_query_response);
-    //     // console.log("Executed SQL Data:", executed_sql);
-
-    //     try {
-    //         if (executed_sql && executed_sql.trim() !== '') {
-    //             const tableData = JSON.parse(executed_sql);
-    //             console.log("Parsed table data:", tableData);
-
-    //             if (Array.isArray(tableData)) {
-    //                 setDataBarData(tableData);
-    //             } else {
-    //                 setDataBarData([tableData]);
-    //             }
-    //         } else {
-    //             // console.log("No executed_sql data, falling back to sql_query_response");
-    //             if (sql_query_response && sql_query_response.trim() !== '') {
-    //                 const fallbackData = JSON.parse(sql_query_response);
-    //                 setDataBarData(Array.isArray(fallbackData) ? fallbackData : [fallbackData]);
-    //             } else {
-    //                 setDataBarData([]);
-    //                 console.warn("No table data available to display");
-    //             }
-    //         }
-
-    //         onOpenModal("table");
-    //     } catch (error) {
-    //         console.error("Error parsing table data:", error);
-    //         console.error("Raw executed_sql:", executed_sql);
-
-    //         setDataBarData([{
-    //             error: "Failed to parse table data",
-    //             raw_data: executed_sql || "No data available"
-    //         }]);
-    //         onOpenModal("table");
-    //     }
-    // };
-
-    // Replace the existing handleTableClick with this:
+   // Replace the existing handleTableClick with this:
     const handleTableClick = (sql_query: string, sql_query_response: string | string[], executed_sql: string | string[]) => {
         try {
             let dataToSet: any = [];
@@ -429,7 +373,17 @@ export default function MessageBubble({ message, onOpenModal, setDataBarData, on
         'brsBasicValue',
         'TotalAmendedValue'
     ];
-
+const formatHeader = (key:string) => {
+  return key
+    .replace(/</g, " < ")
+    .replace(/>/g, " > ")
+    .replace(/_/g, " ")
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/^adani/i, "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+};
     const isAmountColumn = (columnName: string): boolean => {
         return AMOUNT_COLUMNS.some(col => col.toLowerCase() === columnName.toLowerCase());
     };
@@ -651,6 +605,7 @@ export default function MessageBubble({ message, onOpenModal, setDataBarData, on
     // const tableData = message.sql_query_response === 'KM Download Invoice'
     //     ? parseTableData(message.executed_sql[0] || '', documentInfo)
     //     : null;
+console.log(message.data,'in bubble');
 
     useEffect(() => {
         const determineFinalDomain = async () => {
@@ -770,272 +725,113 @@ export default function MessageBubble({ message, onOpenModal, setDataBarData, on
                     </div>
                 )}
 
-                <motion.div
-                    className={`p-4 rounded-2xl ${message.role === "user" ? "bg-[#273658] text-white ml-4 shadow-lg" : "bg-white border border-gray-200 mr-4 shadow-lg"
-                        } overflow-hidden`}
-                >
-                    {message.role === "assistant" ? (
-                        <div className="prose prose-sm max-w-none">
-                            {message.sql_query_response === 'KM Download Invoice' ? (
-                                <div className="space-y-4">
-                                    {documentInfo.ids.length > 0 ? (
-                                        <div className="flex flex-col gap-2">
-                                            <div className="flex items-center justify-between">
-                                                <div className="text-sm text-gray-600">
-                                                    {documentInfo.ids.length === 1
-                                                        ? `Found 1 invoice document:`
-                                                        : `Found ${documentInfo.ids.length} invoice documents:`
-                                                    }
-                                                </div>
-                                                {documentInfo.ids.length > 0 && (
-                                                    <motion.button
-                                                        whileHover={{ scale: 1.05 }}
-                                                        whileTap={{ scale: 0.95 }}
-                                                        onClick={handleBulkDownload}
-                                                        disabled={isDownloading}
-                                                        className="flex items-center gap-2 px-3 py-2 bg-white shadow-md text-gray-700 rounded-lg text-sm hover:bg-blue-50 hover:text-[#273658] transition-colors border border-blue-300"
-                                                        title="Download all documents as ZIP"
-                                                    >
-                                                        {isDownloading ? (
-                                                            <SpinnerDownload
-                                                                variant="button"
-                                                                size="sm"
-                                                            />
-                                                        ) : (
-                                                            <Download className="w-4 h-4" />
-                                                        )}
-                                                        {isDownloading ? 'Creating ZIP...' : ''}
-                                                    </motion.button>
-                                                )}
-                                            </div>
+              <motion.div
+  className={`p-4 rounded-2xl ${
+    message.role === "user"
+      ? "bg-[#273658] text-white ml-4 shadow-lg"
+      : "bg-white border border-gray-200 mr-4 shadow-lg"
+  } overflow-hidden`}
+>
+  {message.role === "assistant" ? (
+    <div className="prose prose-sm max-w-none">
 
-                                            {/* Inline Table Data Display for KM queries */}
-                                            {tableData && (
-                                                <div className="mt-4">
-                                                    <h4 className="text-sm font-semibold text-gray-700 mb-2">Query Results:</h4>
-                                                    <div className="overflow-x-auto border border-gray-200 rounded-lg">
-                                                        <table className="min-w-full divide-y divide-gray-200 text-xs">
-                                                            <thead className="bg-gray-300">
-                                                                <tr>
-                                                                    {Object.keys(tableData[0]).filter(key => !['DocumentLink', 'Domain', 'adaniInvoiceType', 'GeneratedPrNo'].includes(key)).map((key) => {
-                                                                        const isAmount = isAmountColumn(key);
-                                                                        return (
-                                                                            <th
-                                                                                key={key}
-                                                                                className={`px-3 py-2 text-xs font-medium text-white uppercase tracking-wider border-r border-gray-200 last:border-r-0 ${isValueColumn(key) ? 'text-right' : 'text-left'}`}
-                                                                            >
-                                                                                {key === 'DocumentId' ? 'Document Link' : formatColumnHeader(key)}
-                                                                            </th>
-                                                                        );
-                                                                    })}
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody className="bg-white divide-y divide-gray-200">
-                                                                {tableData.map((row, index) => (
-                                                                    <tr key={index} className="hover:bg-gray-50">
-                                                                        {Object.entries(row).filter(([key]) => !['DocumentLink', 'Domain', 'adaniInvoiceType', 'GeneratedPrNo'].includes(key)).map(([key, value], cellIndex) => {
-                                                                            const isAmount = isAmountColumn(key);
-                                                                            return (
-                                                                                <td
-                                                                                    key={cellIndex}
-                                                                                    className={`px-3 py-2 text-gray-900 border-r border-gray-200 last:border-r-0 break-words text-xs ${isValueColumn(key) ? 'text-right' : 'text-left'}`}
-                                                                                >
-                                                                                    {key === 'DocumentId' && value !== 'N/A' ? (
-                                                                                        <button
-                                                                                            onClick={() => handleDocumentLinkClick(String(value), row.Domain)}
-                                                                                            className="text-blue-600 hover:text-blue-800 hover:underline font-semibold cursor-pointer transition-colors duration-200 flex items-center gap-1"
-                                                                                            title={`Open document ${value} (${row.Domain})`}
-                                                                                        >
-                                                                                            <ExternalLink size={12} />
-                                                                                            {String(value)}
-                                                                                        </button>
-                                                                                    ) : (
-                                                                                        String(value)
-                                                                                    )}
-                                                                                </td>
-                                                                            );
-                                                                        })}
-                                                                    </tr>
-                                                                ))}
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    {tableData.length > 10 && (
-                                                        <div className="mt-2 text-xs text-gray-500 text-center">
-                                                            Showing {tableData.length} results
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ) : (
-                                        <div className="text-sm text-red-600">
-                                            No document IDs found for preview.
-                                        </div>
-                                    )}
+      {/* KM Download Invoice */}
+      {message?.sql_query_response === "KM Download Invoice" ? (
+        <div className="text-sm text-gray-700">
+          {/* 👉 Replace this with your ACTUAL KM UI (you removed it earlier) */}
+          KM Invoice UI goes here
+        </div>
+      ) : (
+        <>
+          {/* Markdown Content */}
+          {message?.content && (
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              components={{
+                h1: ({ ...props }) => (
+                  <h1 className="text-xl font-bold mt-4 mb-3 text-gray-800" {...props} />
+                ),
+                p: ({ ...props }) => (
+                  <p className="mb-2 text-gray-800 leading-relaxed" {...props} />
+                ),
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
+          )}
 
-                                    {showIframe && apiPreviewUrl && (
-                                        <>
-                                            {/* Overlay */}
-                                            <div
-                                                className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
-                                                onClick={closeSidebar}
-                                            />
+          {/* Data Table */}
+          {Array.isArray(message?.data) && message?.data.length > 0 && (
+            <div className="mt-4">
+              {/* <h4 className="text-sm font-semibold text-gray-700 mb-2">
+                Data Results:
+              </h4> */}
 
-                                            {/* Right Sidebar */}
-                                            <motion.div
-                                                initial={{ x: "100%" }}
-                                                animate={{ x: 0 }}
-                                                exit={{ x: "100%" }}
-                                                transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                                                className="fixed top-0 right-0 h-full w-full md:w-2/3 lg:w-1/2 bg-white shadow-2xl z-50 flex flex-col"
-                                            >
-                                                {/* Header with Download and Close buttons */}
-                                                <div className="bg-gray-100 px-6 py-4 flex justify-between items-center border-b border-gray-300 flex-shrink-0">
-                                                    <span className="text-lg font-semibold text-gray-800">
-                                                        Document {selectedDocumentId}
-                                                    </span>
-                                                    <div className="flex items-center gap-2">
-                                                        {/* Download Button */}
-                                                        <motion.button
-                                                            whileHover={{ scale: 1.05 }}
-                                                            whileTap={{ scale: 0.95 }}
-                                                            onClick={handleSingleDocumentDownload}
-                                                            disabled={isSingleDocDownloading}
-                                                            className="flex items-center gap-2 px-3 py-2 bg-white text-gray-700 rounded-lg text-sm hover:bg-blue-50 hover:text-[#273658] transition-colors border border-blue-300"
-                                                            title="Download this document"
-                                                        >
-                                                            {isSingleDocDownloading ? (
-                                                                <SpinnerDownload
-                                                                    variant="button"
-                                                                    size="sm"
-                                                                />
-                                                            ) : (
-                                                                <>
-                                                                    <Download className="w-4 h-4" />
-                                                                </>
-                                                            )}
-                                                        </motion.button>
+              <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                <table className="min-w-full divide-y divide-gray-200 text-xs">
+                  <thead className="bg-[#273658]">
+                    <tr>
+                      {Object.keys(message?.data[0]).map((key) => (
+                        <th
+                          key={key}
+                          className="px-3 py-2 text-white text-left text-xs font-medium uppercase border-r last:border-r-0"
+                        >
+                          {formatHeader(key)}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
 
-                                                        {/* Close Button */}
-                                                        <button
-                                                            onClick={closeSidebar}
-                                                            className="text-gray-500 hover:text-gray-700 hover:bg-gray-200 rounded-full p-2 transition-colors"
-                                                            aria-label="Close preview"
-                                                        >
-                                                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                                            </svg>
-                                                        </button>
-                                                    </div>
-                                                </div>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {message?.data.map((row, i) => (
+                      <tr key={i} className="hover:bg-gray-50">
+                        {Object.keys(message?.data[0]).map((key, j) => (
+                          <td
+                            key={j}
+                            className="px-3 py-2 text-gray-900 border-r last:border-r-0 break-words"
+                          >
+                            {String(row[key] ?? "")}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
 
-                                                {/* Iframe Container */}
-                                                <div className="flex-1 overflow-hidden bg-gray-50">
-                                                    <iframe
-                                                        src={apiPreviewUrl + "#toolbar=0"}
-                                                        className="w-full h-full border-0"
-                                                        title={`${selectedDocumentId} - ${selectedDomain}`}
-                                                        onError={(e) => {
-                                                            console.error('Iframe failed to load:', e);
-                                                        }}
-                                                    />
-                                                </div>
-                                            </motion.div>
-                                        </>
-                                    )}
-                                </div>
-                            ) : (
-                                <ReactMarkdown
-                                    remarkPlugins={[remarkGfm]}
-                                    components={{
-                                        h1: ({ node, ...props }) => (
-                                            <h1 className="text-xl font-bold mt-4 mb-3 text-gray-800 break-words" {...props} />
-                                        ),
-                                        h2: ({ node, ...props }) => (
-                                            <h2 className="text-lg font-semibold mt-3 mb-2 text-gray-700 break-words" {...props} />
-                                        ),
-                                        h3: ({ node, ...props }) => (
-                                            <h3 className="text-base font-semibold mt-2 mb-2 text-gray-700 break-words" {...props} />
-                                        ),
-                                        strong: ({ node, ...props }) => (
-                                            <strong className="font-bold text-black-600 break-words" {...props} />
-                                        ),
-                                        ul: ({ node, ...props }) => (
-                                            <ul className="list-disc ml-6 my-2 text-gray-700 space-y-1" {...props} />
-                                        ),
-                                        ol: ({ node, ...props }) => (
-                                            <ol className="list-decimal ml-6 my-2 text-gray-700 space-y-1" {...props} />
-                                        ),
-                                        li: ({ node, ...props }) => (
-                                            <li className="break-words" {...props} />
-                                        ),
-                                        p: ({ node, ...props }) => (
-                                            <p className="mb-2 text-gray-800 break-words leading-relaxed" {...props} />
-                                        ),
-                                        table: ({ node, ...props }) => (
-                                            <div className="overflow-x-auto my-4 border border-gray-200 rounded-lg">
-                                                <table className="min-w-full divide-y divide-gray-200 text-sm" {...props} />
-                                            </div>
-                                        ),
-                                        thead: ({ node, ...props }) => (
-                                            <thead className="bg-gray-50" {...props} />
-                                        ),
-                                        tbody: ({ node, ...props }) => (
-                                            <tbody className="bg-white divide-y divide-gray-200" {...props} />
-                                        ),
-                                        tr: ({ node, ...props }) => (
-                                            <tr className="hover:bg-gray-50" {...props} />
-                                        ),
-                                        th: ({ node, ...props }) => (
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-r border-gray-200 last:border-r-0" {...props} />
-                                        ),
-                                        td: ({ node, ...props }) => (
-                                            <td className="px-4 py-3 text-gray-900 border-r border-gray-200 last:border-r-0 break-words" {...props} />
-                                        ),
-                                        code: ({ node, inline, ...props }) =>
-                                            inline ? (
-                                                <code className="bg-gray-100 text-[#273658] px-2 py-1 rounded text-sm font-mono" {...props} />
-                                            ) : (
-                                                <div className="overflow-x-auto my-2">
-                                                    <code className="block bg-gray-100 text-gray-800 p-3 rounded text-sm font-mono whitespace-pre" {...props} />
-                                                </div>
-                                            ),
-                                        pre: ({ node, ...props }) => (
-                                            <div className="overflow-x-auto my-2">
-                                                <pre className="bg-gray-100 p-3 rounded text-sm" {...props} />
-                                            </div>
-                                        ),
-                                        blockquote: ({ node, ...props }) => (
-                                            <blockquote className="border-l-4 border-[#273658] pl-4 my-2 italic text-gray-600" {...props} />
-                                        ),
-                                    }}
-                                >
-                                    {message.content}
-                                </ReactMarkdown>
-                            )}
-                            {message.role === "assistant" && message.sql_query && (
-                                <div className="mt-4 pt-4 border-t border-gray-200">
-                                    <details className="text-sm">
-                                        <summary className="cursor-pointer font-bold text-gray-700 text-[16px] hover:text-[#273658] transition-colors">
-                                            View Summary
-                                        </summary>
-                                        <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200 overflow-x-auto">
-                                            <code className="text-xs text-gray-800 whitespace-pre-wrap break-words font-mono">
-                                                {typeof message.sql_query === 'string' && message.sql_query.startsWith('{')
-                                                    ? JSON.stringify(JSON.parse(message.sql_query), null, 2)
-                                                    : message.sql_query
-                                                }
-                                            </code>
-                                        </div>
-                                    </details>
-                                </div>
-                            )}
-                        </div>
-                    ) : (
-                        <p className="text-sm lg:text-base break-words leading-relaxed">{message.content}</p>
-                    )}
-                </motion.div>
+              <div className="mt-2 text-xs text-gray-500 text-center">
+                Showing {message?.data.length} results
+              </div>
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Optional SQL Summary */}
+      {message?.sql_query && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <details className="text-sm">
+            <summary className="cursor-pointer font-bold text-gray-700 hover:text-[#273658]">
+              View Summary
+            </summary>
+            <div className="mt-3 bg-gray-50 rounded-lg p-3 border border-gray-200 overflow-x-auto">
+              <code className="text-xs text-gray-800 whitespace-pre-wrap font-mono">
+                {typeof message.sql_query === "string" &&
+                message.sql_query.startsWith("{")
+                  ? JSON.stringify(JSON.parse(message.sql_query), null, 2)
+                  : message.sql_query}
+              </code>
+            </div>
+          </details>
+        </div>
+      )}
+    </div>
+  ) : (
+    <p className="text-sm lg:text-base break-words leading-relaxed">
+      {message.content}
+    </p>
+  )}
+</motion.div>
 
                 {/* Updated condition to show table button for all messages with table data (excluding KM queries) */}
                 <div className="flex items-center gap-2 mt-3 mr-4 flex-wrap">

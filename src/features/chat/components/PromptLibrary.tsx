@@ -65,60 +65,60 @@ export default function PromptLibrary({
   const [error, setError] = useState<string | null>(null)
   const [collapsed, setCollapsed] = useState(false)
 
-  useEffect(() => {
-    if (isOpen) fetchPrompts()
-  }, [isOpen])
+  // useEffect(() => {
+  //   if (isOpen) fetchPrompts()
+  // }, [isOpen])
 
-  const fetchPrompts = async () => {
-    setLoading(true)
-    setError(null)
-    const priorityOrder = [
-      "NFA - Note for Approval",
-      "PO Invoice",
-      "SES - Service Entry Sheet",
-      "KM",
-      "PO - Purchase Order"
-    ];
-    try {
-      const response = await fetch("/api/get-prompts")
-      if (response.ok) {
-        const data = await response.json()
-        const transformedCategories = data.prompt_categories?.map((category) => ({
-          id: category.id,
-          name: category.name || 'Unnamed Category',
-          icon: category.icon,
-          prompts: category.prompts || []
-        })).sort((a, b) => {
-          const indexA = priorityOrder.indexOf(a.name);
-          const indexB = priorityOrder.indexOf(b.name);
+  // const fetchPrompts = async () => {
+  //   setLoading(true)
+  //   setError(null)
+  //   const priorityOrder = [
+  //     "NFA - Note for Approval",
+  //     "PO Invoice",
+  //     "SES - Service Entry Sheet",
+  //     "KM",
+  //     "PO - Purchase Order"
+  //   ];
+  //   try {
+  //     const response = await fetch("/api/get-prompts")
+  //     if (response.ok) {
+  //       const data = await response.json()
+  //       const transformedCategories = data.prompt_categories?.map((category) => ({
+  //         id: category.id,
+  //         name: category.name || 'Unnamed Category',
+  //         icon: category.icon,
+  //         prompts: category.prompts || []
+  //       })).sort((a, b) => {
+  //         const indexA = priorityOrder.indexOf(a.name);
+  //         const indexB = priorityOrder.indexOf(b.name);
 
-          if (indexA !== -1 && indexB !== -1) {
-            return indexA - indexB;
-          }
+  //         if (indexA !== -1 && indexB !== -1) {
+  //           return indexA - indexB;
+  //         }
 
-          if (indexA !== -1 && indexB === -1) {
-            return -1;
-          }
+  //         if (indexA !== -1 && indexB === -1) {
+  //           return -1;
+  //         }
 
-          if (indexA === -1 && indexB !== -1) {
-            return 1;
-          }
+  //         if (indexA === -1 && indexB !== -1) {
+  //           return 1;
+  //         }
 
-          return 0;
-        }) || [];
-        setPromptCategories(transformedCategories)
-        if (transformedCategories?.length > 0) {
-          setExpandedCategories([transformedCategories[0].id])
-        }
-      } else {
-        setError(`Failed to fetch prompts: ${response.statusText}`)
-      }
-    } catch (err) {
-      setError("Failed to connect to server")
-    } finally {
-      setLoading(false)
-    }
-  }
+  //         return 0;
+  //       }) || [];
+  //       setPromptCategories(transformedCategories)
+  //       if (transformedCategories?.length > 0) {
+  //         setExpandedCategories([transformedCategories[0].id])
+  //       }
+  //     } else {
+  //       setError(`Failed to fetch prompts: ${response.statusText}`)
+  //     }
+  //   } catch (err) {
+  //     setError("Failed to connect to server")
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
   const hasPlaceholders = (prompt: string): boolean => {
     return /\[.*?\]/.test(prompt);
   }

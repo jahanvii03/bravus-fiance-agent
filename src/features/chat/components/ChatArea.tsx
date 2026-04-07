@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion"
-import { File, TrendingUp, CircleCheckBig, Home, LogOut, MessageSquareText, Info } from "lucide-react"
+import { File, TrendingUp, CircleCheckBig, Home, LogOut, MessageSquareText, Info, DollarSign } from "lucide-react"
 import SuggestionCard from "./SuggestionCard"
 import MessageBubble from "./MessageBubble"
 import { useNavigate, useLocation } from "react-router-dom"
@@ -33,8 +33,8 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
 
     const allSuggestions = [
         {
-            icon: File,
-            title: "Finance",
+            icon: DollarSign,
+            title: "Cashflow AI",
             subTitle: "",
             path: "/commercial-ai"
         },
@@ -42,7 +42,7 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
     ]
 
     // Filter suggestions based on admin status
-    const suggestions = allSuggestions.filter(s => !s.adminOnly || isAdminUser)
+    // const suggestions = allSuggestions.filter(s => !s.adminOnly || isAdminUser)
     // console.log("-----------", suggestions);
 
 
@@ -109,13 +109,13 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
 
     const getFilteredSuggestions = () => {
         if (chatType === "commercial-ai") {
-            return suggestions.filter(s => s.path === "/commercial-ai");
+            return allSuggestions.filter(s => s.path === "/commercial-ai");
         } else if (chatType === "sap-data") {
-            return suggestions.filter(s => s.path === "/sap-data");
+            return allSuggestions.filter(s => s.path === "/sap-data");
         } else if (chatType === "doa") {
-            return suggestions.filter(s => s.path === "/doa");
+            return allSuggestions.filter(s => s.path === "/doa");
         }
-        return suggestions; // Show all for general chat
+        return allSuggestions; // Show all for general chat
     };
 
     const filteredSuggestions = getFilteredSuggestions();
@@ -197,7 +197,8 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleHomeClick}
-                    className="fixed top-6 right-84 z-50 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 group"
+                    className="fixed top-6 right-6 lg:right-10 z-50 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 group"
+                    // className="fixed top-6 right-84 z-50 bg-white hover:bg-gray-50 border border-gray-200 rounded-full p-3 shadow-lg transition-all duration-200 group"
                     aria-label="Go to Home"
                 >
                     <Home className="w-5 h-5 text-gray-600 group-hover:text-[#273658] transition-colors" />
@@ -219,7 +220,7 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
                                 className="text-center mb-12"
                             >
                                 <h1 className="text-3xl lg:text-4xl font-medium text-gray-800 mb-4">
-                                    Welcome to <b>Bravus {chatType === "commercial-ai" ? "Commercial AI" : chatType === "sap-data" ? "Commercial Agentic AI" : "Commercial Agentic AI"}</b>
+                                    Welcome to <b>Bravus {chatType === "commercial-ai" ? "Commercial AI" : chatType === "sap-data" ? "Cashflow AI" : "Cashflow AI"}</b>
                                 </h1>
 
                                 <h2 className="text-2xl lg:text-3xl font-medium text-gray-700 mb-6">Can I help you with anything?</h2>
@@ -260,7 +261,7 @@ export default function ChatArea({ messages, onOpenModal, chatType, setDataBarDa
                                 className="text-center mb-12"
                             >
                                 <h1 className="text-3xl lg:text-4xl font-medium text-gray-800 mb-4">
-                                    Welcome to <b>Bravus {chatType === "commercial-ai" ? "Commercial AI" : chatType === "sap-data" ? "Commercial Agentic AI" : "Commercial Agentic AI"}</b>
+                                    Welcome to <b>Bravus {chatType === "commercial-ai" ? "Cashflow AI" : chatType === "sap-data" ? "Cashflow AI" : "Cashflow AI"}</b>
                                 </h1>
                                 <h2 className="text-2xl lg:text-3xl font-medium text-gray-700 mb-6">Can I help you with anything?</h2>
                                 <p className="text-gray-500 max-w-md mx-auto leading-relaxed">
